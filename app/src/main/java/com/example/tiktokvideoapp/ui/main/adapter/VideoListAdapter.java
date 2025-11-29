@@ -1,5 +1,6 @@
 package com.example.tiktokvideoapp.ui.main.adapter;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.tiktokvideoapp.R;
 import com.example.tiktokvideoapp.model.VideoItem;
+import com.example.tiktokvideoapp.ui.player.VideoPlayerActivity;
 
 import java.util.List;
 
@@ -60,11 +62,13 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
                 .circleCrop()
                 .into(holder.ivAvatar);
 
-        holder.itemView.setOnClickListener(v ->
-                Toast.makeText(v.getContext(),
-                        "点击了：" + item.title,
-                        Toast.LENGTH_SHORT).show()
-        );
+        // 点击响应
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(v.getContext(), VideoPlayerActivity.class);
+            intent.putExtra("title", item.title);
+            v.getContext().startActivity(intent);
+        });
+
     }
 
 
