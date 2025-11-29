@@ -5,17 +5,16 @@ import com.example.tiktokvideoapp.model.VideoItem;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 负责提供视频数据：后续会放
- * - 联网请求
- * - 本地缓存（比如 SharedPreferences / Room）
- */
 public class VideoRepository {
 
-    // 单例（全局只要一个仓库对象）
     private static volatile VideoRepository sInstance;
 
-    private VideoRepository() {}
+    // 所有 mock 数据（一次生成，分页从这里切片）
+    private List<VideoItem> allMockData;
+
+    private VideoRepository() {
+        allMockData = createMockData();
+    }
 
     public static VideoRepository getInstance() {
         if (sInstance == null) {
@@ -28,30 +27,42 @@ public class VideoRepository {
         return sInstance;
     }
 
-    // 回调接口：数据加载成功后通知调用方
     public interface LoadCallback {
         void onSuccess(List<VideoItem> list);
         void onError(Throwable t);
     }
 
     /**
-     * 对外暴露的加载方法
-     * 现在先用本地 mock，后面这里会改成：先读缓存 → 再请求网络
+     * 按页加载数据
+     * @param page 第几页，从 1 开始
+     * @param pageSize 每页多少条
      */
-    public void loadVideoList(LoadCallback callback) {
+    public void loadVideoListPage(int page, int pageSize, LoadCallback callback) {
         try {
-            List<VideoItem> list = createMockData();
-            callback.onSuccess(list);
+            if (allMockData == null) {
+                allMockData = createMockData();
+            }
+
+            int from = (page - 1) * pageSize;
+            if (from >= allMockData.size()) {
+                // 没有更多了
+                callback.onSuccess(new ArrayList<>());
+                return;
+            }
+
+            int to = Math.min(from + pageSize, allMockData.size());
+            List<VideoItem> subList = new ArrayList<>(allMockData.subList(from, to));
+            callback.onSuccess(subList);
         } catch (Exception e) {
             callback.onError(e);
         }
     }
 
-    // 暂时把你之前的 mock 数据搬过来
+    // ====== 下面维持自动 mock 逻辑，生成 200/1000 条 ======
+
     private List<VideoItem> createMockData() {
         List<VideoItem> list = new ArrayList<>();
 
-        // 准备几个昵称池
         String[] names = {
                 "Keeendrix", "John", "Jony", "JesseLiu", "CoachLeo",
                 "LuckyStar", "FunnyCat", "AnalystPro", "MacroKing", "ChatSlave",
@@ -59,7 +70,6 @@ public class VideoRepository {
                 "SoloMain", "SupportLife", "WhaleDaddy", "PotatoPlayer", "NightOwl"
         };
 
-        // 准备几个标题池（随机组合）
         String[] titles = {
                 "Look how beautiful this flamingo is, nature creates the best colors.",
                 "Can you imagine? The most beautiful creature in this jungle fight.",
@@ -83,32 +93,27 @@ public class VideoRepository {
                 "Late night chill stream."
         };
 
+        // 数据量更高
         for (int i = 1; i <= 1000; i++) {
 
-            // 随机选一个昵称
             String author = names[(int) (Math.random() * names.length)];
-
-            // 随机选一个标题
             String title = titles[(int) (Math.random() * titles.length)];
 
-            // 随机人数 1K - 30K
-            int viewer = 1 + (int)(Math.random() * 30);
+            int viewer = 1 + (int) (Math.random() * 30);
             String viewerCount = viewer + "K";
 
             list.add(new VideoItem(
                     String.valueOf(i),
                     title,
-                    "https://picsum.photos/400/600?random=" + i,     // 每条封面不同
+                    "https://picsum.photos/400/600?random=" + i,
                     "LIVE",
                     author,
-                    "https://picsum.photos/100/100?random=" + (i + 1000), // 每条头像不同
-                    "", // 视频 URL 可以留空
+                    "https://picsum.photos/100/100?random=" + (i + 1000),
+                    "",
                     viewerCount
             ));
         }
 
         return list;
     }
-
-
 }

@@ -38,26 +38,45 @@ public class VideoListFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.recycler_view);
 
-        // 2 列瀑布流布局
         StaggeredGridLayoutManager layoutManager =
                 new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
 
-        // 先给一个空数据的 adapter
         adapter = new VideoListAdapter(new ArrayList<VideoItem>());
         recyclerView.setAdapter(adapter);
 
-        // 获取 ViewModel
         viewModel = new ViewModelProvider(this).get(VideoListViewModel.class);
 
-        // 监听数据变化
         viewModel.videoList.observe(getViewLifecycleOwner(), list -> {
             if (list != null) {
                 adapter.setData(list);
             }
         });
 
-        // 触发加载数据
-        viewModel.loadVideos();
+        // 监听滑动事件，实现“滑到底部加载更多”
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView rv, int dx, int dy) {
+                super.onScrolled(rv, dx, dy);
+
+                if (dy <= 0) return; // 只关心向下滑
+
+                StaggeredGridLayoutManager lm = (StaggeredGridLayoutManager) rv.getLayoutManager();
+                if (lm == null) return;
+
+                int[] lastVisibleItemPositions = lm.findLastVisibleItemPositions(null);
+                int lastVisible = Math.max(lastVisibleItemPositions[0], lastVisibleItemPositions[1]);
+                int totalItemCount = lm.getItemCount();
+
+                // 当最后可见位置接近总数末尾 4 个时，加载更多
+                if (totalItemCount - lastVisible <= 4) {
+                    viewModel.loadMore();
+                }
+            }
+        });
+
+        // 加载第一页数据
+        viewModel.loadFirstPage();
     }
+
 }
