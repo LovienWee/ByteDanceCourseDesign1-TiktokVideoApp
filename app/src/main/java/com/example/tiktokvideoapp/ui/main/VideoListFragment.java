@@ -1,30 +1,29 @@
 package com.example.tiktokvideoapp.ui.main;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.example.tiktokvideoapp.R;
 import com.example.tiktokvideoapp.model.VideoItem;
 import com.example.tiktokvideoapp.ui.main.adapter.VideoListAdapter;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class VideoListFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private VideoListAdapter adapter;
+    private VideoListViewModel viewModel;
 
-    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
@@ -44,42 +43,21 @@ public class VideoListFragment extends Fragment {
                 new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
 
-        // 准备一些假数据
-        List<VideoItem> mockData = createMockData();
-
-        adapter = new VideoListAdapter(mockData);
+        // 先给一个空数据的 adapter
+        adapter = new VideoListAdapter(new ArrayList<VideoItem>());
         recyclerView.setAdapter(adapter);
+
+        // 获取 ViewModel
+        viewModel = new ViewModelProvider(this).get(VideoListViewModel.class);
+
+        // 监听数据变化
+        viewModel.videoList.observe(getViewLifecycleOwner(), list -> {
+            if (list != null) {
+                adapter.setData(list);
+            }
+        });
+
+        // 触发加载数据
+        viewModel.loadVideos();
     }
-
-    private List<VideoItem> createMockData() {
-        List<VideoItem> list = new ArrayList<>();
-
-        list.add(new VideoItem("1",
-                "Look how beautiful this flamingo is, nature creates the best colors.",
-                "", "LIVE", "Keeendrix", "", "", "13K"));
-        list.add(new VideoItem("2",
-                "Can you imagine? The most beautiful creature in this jungle fight.",
-                "", "LIVE", "John", "", "", "13K"));
-        list.add(new VideoItem("3",
-                "Rank game highlights, we turned the game around in the last 5 minutes.",
-                "", "LIVE", "Jony", "", "", "13K"));
-        list.add(new VideoItem("4",
-                "New hero first day, insane burst damage and crazy mobility.",
-                "", "LIVE", "JesseLiu", "", "", "13K"));
-        list.add(new VideoItem("5",
-                "Teaching you how to climb from Gold to Mythic in 3 days.",
-                "", "LIVE", "CoachLeo", "", "", "13K"));
-        list.add(new VideoItem("6",
-                "Only 1 HP left but still won the fight, unbelievable clutch moment.",
-                "", "LIVE", "LuckyStar", "", "", "13K"));
-        list.add(new VideoItem("7",
-                "Funny fails compilation, my teammates are the real comedians.",
-                "", "LIVE", "FunnyCat", "", "", "13K"));
-        list.add(new VideoItem("8",
-                "New patch analysis, which heroes are the strongest right now?",
-                "", "LIVE", "AnalystPro", "", "", "13K"));
-
-        return list;
-    }
-
 }

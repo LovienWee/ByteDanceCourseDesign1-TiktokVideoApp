@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.tiktokvideoapp.R;
 import com.example.tiktokvideoapp.model.VideoItem;
 
@@ -39,18 +40,25 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
     @Override
     public void onBindViewHolder(@NonNull VideoViewHolder holder, int position) {
         VideoItem item = data.get(position);
-        holder.tvTitle.setText(item.title);
-        holder.tvTag.setText(item.tag);
-        holder.tvNickname.setText(item.authorName);
+
         holder.tvTitle.setText(item.title);
         holder.tvTag.setText(item.tag);
         holder.tvNickname.setText(item.authorName);
         holder.tvViewCount.setText(item.viewerCount);
 
+        // 封面图（centerCrop）
+        Glide.with(holder.itemView.getContext())
+                .load(item.coverUrl)
+                .placeholder(R.drawable.ic_launcher_background)
+                .centerCrop()
+                .into(holder.ivCover);
 
-        // TODO: 之后用 Glide 加载网络图片，现在先用默认图
-        holder.ivCover.setImageResource(R.drawable.ic_launcher_background);
-        holder.ivAvatar.setImageResource(R.mipmap.ic_launcher_round);
+        // 头像图（圆形裁剪）
+        Glide.with(holder.itemView.getContext())
+                .load(item.avatarUrl)
+                .placeholder(R.mipmap.ic_launcher_round)
+                .circleCrop()
+                .into(holder.ivAvatar);
 
         holder.itemView.setOnClickListener(v ->
                 Toast.makeText(v.getContext(),
@@ -58,6 +66,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
                         Toast.LENGTH_SHORT).show()
         );
     }
+
 
     @Override
     public int getItemCount() {

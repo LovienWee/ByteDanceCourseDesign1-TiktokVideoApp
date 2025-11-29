@@ -13,8 +13,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         TextView tvBack = findViewById(R.id.tv_back);
-        tvBack.setOnClickListener(v -> finish());
 
+        tvBack.setOnClickListener(v -> finish());
 
         // 默认加载列表 Fragment
         getSupportFragmentManager()
