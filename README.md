@@ -140,7 +140,7 @@ app/src/main/java/com/example/tiktokvideoapp
 
 ## 📷 截图展示（Screenshots）
 
-![img.png](img.png)（此处可放你的截图）
+![img.png](img.png)
 
 ---
 
