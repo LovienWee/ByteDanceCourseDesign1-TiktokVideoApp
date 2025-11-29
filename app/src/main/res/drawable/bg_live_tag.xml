@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!-- 粉色背景，类似 TikTok 主色 -->
+    <solid android:color="#FF0050" />
+
+    <!-- 圆角，数值大一点会更“药丸” -->
+    <corners android:radius="100dp" />
+</shape>
