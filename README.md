@@ -7,7 +7,7 @@
 
 ## ✨ 功能特性（Features）
 
-### 🎥 1. 瀑布流视频列表（StaggeredGrid Layout）
+### 1. 瀑布流视频列表（StaggeredGrid Layout）
 - 双列瀑布流布局
 - 每个卡片包含：
     - 封面图（cover）
@@ -18,18 +18,18 @@
     - 作者昵称 nickname
 - 使用 Glide 加载远程网络图片（含缓存与占位图）
 
-### 📡 2. 分页加载（Paging）
+### 2. 分页加载（Paging）
 - 首屏加载 50 条数据
 - 当滑动到列表底部附近时自动加载下一页
 - ViewModel + Repository 解耦数据与 UI
 - 模拟真实线上接口的分页行为（可进一步接入后台）
 
-### 🖼 3. 网络图片加载（Network Images）
+### 3. 网络图片加载（Network Images）
 - 封面和头像均通过 Glide 从网络加载
 - 使用占位图、内存缓存、磁盘缓存提升滑动流畅度
 - 大量 mock 数据模拟高流量场景
 
-### ▶️ 4. 视频播放页（VideoPlayerActivity）
+### 4. 视频播放页（VideoPlayerActivity）
 - 点击卡片跳转至播放详情页
 - 使用 **ExoPlayer** 播放网络 `mp4` 视频
 - 支持：
@@ -38,7 +38,7 @@
     - 缓冲状态显示（`show_buffering`）
     - 播放器 UI 自适配
 
-### 📱 5. 横竖屏切换播放不中断
+### 5. 横竖屏切换播放不中断
 - 默认情况下，横屏会重建 Activity 导致 ExoPlayer 被销毁
 - 本项目通过 Manifest 中声明：
 
@@ -49,7 +49,7 @@
 
 * 横竖屏切换时播放器实例未被销毁，进度不丢失
 
-### 📦 6. 数据层设计与扩展（Repository）
+### 6. 数据层设计与扩展（Repository）
 
 * 使用 Repository 统一管理数据来源
 * 当前使用本地 mock 数据模拟视频列表
